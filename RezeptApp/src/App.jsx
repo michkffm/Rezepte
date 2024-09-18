@@ -1,18 +1,22 @@
 import RecipeSearch from './components/RecipeSearch';
-import useThemeToggle from "./components/ThemeToggle";
+import RecipeDetail from './components/RecipeDetail';
+import CategorySearch from './components/CategorySearch'; // Importiere die neue Komponente
+import Navbar from './components/Navbar'; 
 import "./App.css";
-
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function App() {
-  const [isDarkMode, toggleTheme] = useThemeToggle();
-
   return (
-    <div className={`App ${isDarkMode ? 'dark-mode' : ''}`}>
-      <button onClick={toggleTheme} className="theme-toggle-button">
-        {isDarkMode ? "Heller Modus" : "Dunkler Modus"}
-      </button>
-      <RecipeSearch />
-    </div>
+   <>
+      <Navbar /> 
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<RecipeSearch />} />
+          <Route path="/recipe/details/:id" element={<RecipeDetail />} />
+          <Route path="/category-search" element={<CategorySearch />} /> {/* Neue Route hinzufügen */}
+        </Routes>
+      </div>
+      </>
   );
 }
 

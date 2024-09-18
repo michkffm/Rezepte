@@ -1,25 +1,38 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import "../Styles/RecipeSearch.css";
 
 export default function RecipeSearch() {
   const [query, setQuery] = useState('');
   const [recipes, setRecipes] = useState([]);
   const [error, setError] = useState(null);
-  const [selectedRecipeIndex, setSelectedRecipeIndex] = useState(null);
+  const [randomRecipe, setRandomRecipe] = useState(null);
 
   const fetchRecipes = () => {
     const url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`;
-
-    return fetch(url)
+    fetch(url)
       .then(response => {
-        if (!response.ok) {
-          throw new Error('Fehler beim Abrufen der Daten');
-        }
+        if (!response.ok) throw new Error('Fehler beim Abrufen der Daten');
         return response.json();
       })
       .then(data => {
-        setRecipes(data.meals || []);
+        setRecipes(data.meals);
+        setRandomRecipe(null);
       })
+      .catch(err => {
+        console.error('Fehler:', err);
+        setError('Fehler beim Abrufen der Daten. Bitte versuche es später erneut.');
+      });
+  };
+
+  const fetchRandomRecipe = () => {
+    const url = 'https://www.themealdb.com/api/json/v1/1/random.php';
+    fetch(url)
+      .then(response => {
+        if (!response.ok) throw new Error('Fehler beim Abrufen der Daten');
+        return response.json();
+      })
+      .then(data => setRandomRecipe(data.meals[0]))
       .catch(err => {
         console.error('Fehler:', err);
         setError('Fehler beim Abrufen der Daten. Bitte versuche es später erneut.');
@@ -29,10 +42,6 @@ export default function RecipeSearch() {
   const handleSearch = (e) => {
     e.preventDefault();
     fetchRecipes();
-  };
-
-  const toggleRecipe = (index) => {
-    setSelectedRecipeIndex(index === selectedRecipeIndex ? null : index);
   };
 
   return (
@@ -47,35 +56,37 @@ export default function RecipeSearch() {
           className="search-input"
         />
         <button type="submit" className="search-button">Suchen</button>
+        <button type="button" onClick={fetchRandomRecipe} className="search-button">Zufälliges Rezept</button>
       </form>
       {error && <p className="error-message">{error}</p>}
+      {randomRecipe && (
+        <div className="recipe-card random-recipe">
+          <h2>{randomRecipe.strMeal}</h2>
+          <img src={randomRecipe.strMealThumb} alt={randomRecipe.strMeal} className="recipe-image" />
+          <div className="recipe-details">
+            <p><strong>Kategorie:</strong> {randomRecipe.strCategory}</p>
+            <p><strong>Region:</strong> {randomRecipe.strArea}</p>
+            <p><strong>Anleitung:</strong> {randomRecipe.strInstructions}</p>
+            <a href={randomRecipe.strYoutube} target="_blank">Video ansehen</a>
+            <h3>Zutaten:</h3>
+            <ul>
+              {Array.from({ length: 20 }, (_, i) => i + 1).map((i) => {
+                const ingredient = randomRecipe[`strIngredient${i}`];
+                const measure = randomRecipe[`strMeasure${i}`];
+                return ingredient ? (
+                  <li key={i}>{measure} {ingredient}</li>
+                ) : null;
+              })}
+            </ul>
+          </div>
+        </div>
+      )}
       <div className="recipes-grid">
-        {recipes.map((recipe, index) => (
+        {recipes.length > 0 && recipes.map((recipe) => (
           <div key={recipe.idMeal} className="recipe-card">
-            <h2 onClick={() => toggleRecipe(index)}>{recipe.strMeal}</h2>
-            {recipe.strDrinkAlternate && <p><strong>Alternatives Getränk:</strong> {recipe.strDrinkAlternate}</p>}
-            <p><strong>Kategorie:</strong> {recipe.strCategory}</p>
+            <h2>{recipe.strMeal}</h2>
             <img src={recipe.strMealThumb} alt={recipe.strMeal} className="recipe-image" />
-            {selectedRecipeIndex === index && (
-              <div className="recipe-details">
-                <p><strong>Region:</strong> {recipe.strArea}</p>
-                <p><strong>Anleitung:</strong> {recipe.strInstructions}</p>
-                {recipe.strYoutube && (
-                  <a href={recipe.strYoutube} target="_blank" rel="noopener noreferrer">Video ansehen</a>
-                )}
-                <h3>Zutaten:</h3>
-                <ul>
-                  {Array.from({ length: 20 }, (_, i) => ({
-                    ingredient: recipe[`strIngredient${i + 1}`],
-                    measure: recipe[`strMeasure${i + 1}`],
-                  }))
-                    .filter(({ ingredient }) => ingredient)
-                    .map(({ ingredient, measure }, i) => (
-                      <li key={i}>{measure} {ingredient}</li>
-                    ))}
-                </ul>
-              </div>
-            )}
+            <Link to={`/recipe/details/${recipe.idMeal}`} className="view-details">Details ansehen</Link>
           </div>
         ))}
       </div>
