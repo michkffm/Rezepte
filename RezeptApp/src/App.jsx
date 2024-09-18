@@ -13,7 +13,7 @@ function App() {
         <Routes>
           <Route path="/" element={<RecipeSearch />} />
           <Route path="/recipe/details/:id" element={<RecipeDetail />} />
-          <Route path="/category-search" element={<CategorySearch />} /> {/* Neue Route hinzufügen */}
+          <Route path="/category-search" element={<CategorySearch />} /> 
         </Routes>
       </div>
       </>

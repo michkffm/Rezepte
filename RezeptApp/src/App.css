@@ -18,7 +18,7 @@ App {
   }
   
   .theme-toggle-button:hover {
-    background-color: #e68900;
+    background-color: #00AFB9
   }
   
  
@@ -33,6 +33,6 @@ App {
   }
   
   .App.dark-mode .theme-toggle-button:hover {
-    background-color: #e68900;
+    background-color: #00AFB9;
   }
   
