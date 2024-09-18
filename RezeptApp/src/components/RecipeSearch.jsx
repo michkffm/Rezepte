@@ -11,7 +11,8 @@ export default function RecipeSearch() {
   const YOUR_APP_KEY = '912d47a03a9ac53c4bb00e163440e283';
 
   const fetchRecipes = (query) => {
-    const url = `https://api.edamam.com/search?q=${query}&app_id=${YOUR_APP_ID}&app_key=${YOUR_APP_KEY}`;
+    const url = `https://api.edamam.com/api/recipes/v2?type=public&q=${query}&app_id=${YOUR_APP_ID}&app_key=${YOUR_APP_KEY}`;
+  
   
     return fetch(url)
       .then((response) => {
