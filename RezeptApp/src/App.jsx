@@ -1,9 +1,9 @@
 import RecipeSearch from './components/RecipeSearch';
 import RecipeDetail from './components/RecipeDetail';
-import CategorySearch from './components/CategorySearch'; // Importiere die neue Komponente
+import CategorySearch from './components/CategorySearch'; 
 import Navbar from './components/Navbar'; 
 import "./App.css";
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 function App() {
   return (
