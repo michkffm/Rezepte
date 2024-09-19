@@ -16,7 +16,13 @@ export default function RecipeSearch() {
         return response.json();
       })
       .then(data => {
-        setRecipes(data.meals);
+        if (data.meals) {
+          setRecipes(data.meals);
+          setError(null); 
+        } else {
+          setRecipes([]); 
+          setError('Kein Rezept gefunden. Bitte versuche es mit einem anderen Suchbegriff.');
+        }
         setRandomRecipe(null);
       })
       .catch(err => {
@@ -32,7 +38,10 @@ export default function RecipeSearch() {
         if (!response.ok) throw new Error('Fehler beim Abrufen der Daten');
         return response.json();
       })
-      .then(data => setRandomRecipe(data.meals[0]))
+      .then(data => {
+        setRandomRecipe(data.meals[0]);
+        setError(null); 
+      })
       .catch(err => {
         console.error('Fehler:', err);
         setError('Fehler beim Abrufen der Daten. Bitte versuche es später erneut.');
