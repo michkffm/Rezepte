@@ -1,6 +1,6 @@
-import RecipeSearch from './components/RecipeSearch';
-import RecipeDetail from './components/RecipeDetail';
-import CategorySearch from './components/CategorySearch'; 
+import RecipeSearch from "./Views/RecipeSearch";
+import RecipeDetail from './Views/RecipeDetail';
+import CategorySearch from './Views/CategorySearch'; 
 import Navbar from './components/Navbar'; 
 import "./App.css";
 import { Route, Routes } from 'react-router-dom';
