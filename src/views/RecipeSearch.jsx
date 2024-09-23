@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import "../Styles/RecipeSearch.css";
+import "../styles/RecipeSearch.css";
 
 export default function RecipeSearch() {
   const [query, setQuery] = useState('');

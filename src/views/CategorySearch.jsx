@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import "../Styles/CategorySearch.css";
+
 
 export default function CategorySearch() {
   const [categories, setCategories] = useState([]);
