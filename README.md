@@ -1,8 +1,16 @@
-# React + Vite
+# Rezept - Rezept Such App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[Zum Projekt](https://michkffm.github.io/Rezepte/)
 
-Currently, two official plugins are available:
+## Projektbeschreibung
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+RezeptKoch ist eine einfache und benutzerfreundliche Webanwendung zur Suche nach Rezepten. Mithilfe der TheMealDB API ermöglicht die App das Durchsuchen von Tausenden von Rezepten basierend auf Kategorien und Zutaten. Zusätzlich bietet sie eine Zufallsrezept-Funktion, um Inspiration für neue Gerichte zu finden.
+
+## Features
+
+- **Rezeptsuche**: Suche nach Rezepten basierend auf Zutaten oder Kategorien.
+- **Zufallsrezept**: Zeigt ein zufälliges Rezept an.
+- **Kategoriefilter**: Auswahl von Rezepten nach verschiedenen Kategorien über ein Dropdown-Menü.
+- **Light/Dark Mode**: Umschalten zwischen hellem und dunklem Design.
+- **Responsives Design**: Optimiert für mobile und Desktop-Geräte.
+
