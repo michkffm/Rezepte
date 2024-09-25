@@ -14,3 +14,15 @@ Rezepte SPA ist eine einfache und benutzerfreundliche Webanwendung zur Suche nac
 - **Light/Dark Mode**: Umschalten zwischen hellem und dunklem Design.
 - **Responsives Design**: Optimiert für mobile und Desktop-Geräte.
 
+Technologien
+
+    React: Für die komponentenbasierte Benutzeroberfläche.
+    Vite: Projekt wurde mit vite@latest erstellt, um eine schnelle Entwicklungsumgebung zu gewährleisten.
+    HTML, CSS, JavaScript: Für die Benutzeroberfläche und Funktionalität.
+    TheMealDB API: Für das Abrufen der Rezeptdaten.
+    GitHub Pages: Deployment der App.
+
+Autor
+
+    Name: Michael Koch
+    GitHub: michkffm
