@@ -14,6 +14,12 @@ Rezepte SPA ist eine einfache und benutzerfreundliche Webanwendung zur Suche nac
 - **Light/Dark Mode**: Umschalten zwischen hellem und dunklem Design.
 - **Responsives Design**: Optimiert für mobile und Desktop-Geräte.
 
+- ## Installation und Nutzung
+
+1. Klone das Repository:
+   ```bash
+   git clone https://github.com/dein-benutzername/Rezepte.git
+
 Technologien
 
     React: Für die komponentenbasierte Benutzeroberfläche.
