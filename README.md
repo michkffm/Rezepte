@@ -4,7 +4,7 @@
 
 ## Projektbeschreibung
 
-RezeptKoch ist eine einfache und benutzerfreundliche Webanwendung zur Suche nach Rezepten. Mithilfe der TheMealDB API ermöglicht die App das Durchsuchen von Tausenden von Rezepten basierend auf Kategorien und Zutaten. Zusätzlich bietet sie eine Zufallsrezept-Funktion, um Inspiration für neue Gerichte zu finden.
+Rezepte SPA ist eine einfache und benutzerfreundliche Webanwendung zur Suche nach Rezepten. Mithilfe der TheMealDB API ermöglicht die App das Durchsuchen von Tausenden von Rezepten basierend auf Kategorien und Zutaten. Zusätzlich bietet sie eine Zufallsrezept-Funktion, um Inspiration für neue Gerichte zu finden.
 
 ## Features
 
