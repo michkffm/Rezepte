@@ -1,34 +1,37 @@
-# Rezept - Rezept Such App
+# RezeptKoch
 
-[Zum Projekt](https://michkffm.github.io/Rezepte/)
+[Live-App](https://michkffm.github.io/Rezepte/)
 
-## Projektbeschreibung
+RezeptKoch ist eine browserbasierte Rezept-App mit Suche, Kategorien, Zufallsrezepten und Rezeptdetails. Die Oberfläche ist auf Deutsch und Englisch verfügbar und bietet Hell- und Dunkelmodus. Rezeptnamen und Anleitungen erscheinen in der Sprache, in der TheMealDB sie bereitstellt.
 
-Rezepte SPA ist eine einfache und benutzerfreundliche Webanwendung zur Suche nach Rezepten. Mithilfe der TheMealDB API ermöglicht die App das Durchsuchen von Tausenden von Rezepten basierend auf Kategorien und Zutaten. Zusätzlich bietet sie eine Zufallsrezept-Funktion, um Inspiration für neue Gerichte zu finden.
+## Funktionen
 
-## Features
+- Suche nach Rezeptnamen und Durchsuchen nach Kategorie
+- Zufallsrezept entdecken
+- Zutaten, Anleitung und optionales Rezeptvideo ansehen
+- Deutsche und englische Oberfläche
+- Hell- und Dunkelmodus mit im Browser gespeicherter Auswahl
+- Responsive Darstellung für Smartphones und Desktopgeräte
 
-- **Rezeptsuche**: Suche nach Rezepten basierend auf Zutaten oder Kategorien.
-- **Zufallsrezept**: Zeigt ein zufälliges Rezept an.
-- **Kategoriefilter**: Auswahl von Rezepten nach verschiedenen Kategorien über ein Dropdown-Menü.
-- **Light/Dark Mode**: Umschalten zwischen hellem und dunklem Design.
-- **Responsives Design**: Optimiert für mobile und Desktop-Geräte.
+## Lokal starten
 
-- ## Installation und Nutzung
+```bash
+git clone https://github.com/michkffm/Rezepte.git
+cd Rezepte
+npm ci
+npm run dev
+```
 
-1. Klone das Repository:
-   ```bash
-   git clone https://github.com/dein-benutzername/Rezepte.git
+## Prüfen und bauen
 
-Technologien
+```bash
+npm run lint
+npm run build
+```
 
-    React: Für die komponentenbasierte Benutzeroberfläche.
-    Vite: Projekt wurde mit vite@latest erstellt, um eine schnelle Entwicklungsumgebung zu gewährleisten.
-    HTML, CSS, JavaScript: Für die Benutzeroberfläche und Funktionalität.
-    TheMealDB API: Für das Abrufen der Rezeptdaten.
-    GitHub Pages: Deployment der App.
+## Technologien und Daten
 
-Autor
-
-    Name: Michael Koch
-    GitHub: michkffm
+- React und JavaScript
+- Vite
+- TheMealDB API für Rezept- und Kategoriedaten
+- GitHub Pages für die Veröffentlichung

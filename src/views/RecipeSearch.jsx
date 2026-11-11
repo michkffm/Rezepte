@@ -1,104 +1,109 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-
+import { useApp } from '../context/useApp';
+import { RecipeCard, RecipeContent } from '../components/RecipeContent';
 
 export default function RecipeSearch() {
+  const { language, t } = useApp();
   const [query, setQuery] = useState('');
   const [recipes, setRecipes] = useState([]);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
   const [randomRecipe, setRandomRecipe] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
 
-  const fetchRecipes = () => {
-    const url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`;
-    fetch(url)
-      .then(response => {
-        if (!response.ok) throw new Error('Fehler beim Abrufen der Daten');
-        return response.json();
-      })
-      .then(data => {
-        if (data.meals) {
-          setRecipes(data.meals);
-          setError(null); 
-        } else {
-          setRecipes([]); 
-          setError('Kein Rezept gefunden. Bitte versuche es mit einem anderen Suchbegriff.');
-        }
-        setRandomRecipe(null);
-      })
-      .catch(err => {
-        console.error('Fehler:', err);
-        setError('Fehler beim Abrufen der Daten. Bitte versuche es später erneut.');
-      });
+  const fetchRecipes = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    setError('');
+    setRandomRecipe(null);
+    setSearched(true);
+    try {
+      const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(query.trim())}`);
+      if (!response.ok) throw new Error('Recipe search request failed');
+      const data = await response.json();
+      setRecipes(data.meals || []);
+    } catch {
+      setError(t.searchError);
+      setRecipes([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const fetchRandomRecipe = () => {
-    const url = 'https://www.themealdb.com/api/json/v1/1/random.php';
-    fetch(url)
-      .then(response => {
-        if (!response.ok) throw new Error('Fehler beim Abrufen der Daten');
-        return response.json();
-      })
-      .then(data => {
-        setRandomRecipe(data.meals[0]);
-        setError(null); 
-      })
-      .catch(err => {
-        console.error('Fehler:', err);
-        setError('Fehler beim Abrufen der Daten. Bitte versuche es später erneut.');
-      });
-  };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    fetchRecipes();
+  const fetchRandomRecipe = async () => {
+    setLoading(true);
+    setError('');
+    setRecipes([]);
+    setSearched(false);
+    try {
+      const response = await fetch('https://www.themealdb.com/api/json/v1/1/random.php');
+      if (!response.ok) throw new Error('Random recipe request failed');
+      const data = await response.json();
+      setRandomRecipe(data.meals?.[0] || null);
+      if (!data.meals?.[0]) setError(t.searchError);
+    } catch {
+      setError(t.searchError);
+      setRandomRecipe(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="recipe-search">
-      <h1>Rezept Suche</h1>
-      <form onSubmit={handleSearch} className="search-form">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Suche nach Rezepten"
-          className="search-input"
-        />
-        <button type="submit" className="search-button">Suchen</button>
-        <button type="button" onClick={fetchRandomRecipe} className="search-button">Zufälliges Rezept</button>
-      </form>
-      {error && <p className="error-message">{error}</p>}
-      {randomRecipe && (
-        <div className="recipe-card random-recipe">
-          <h2>{randomRecipe.strMeal}</h2>
-          <img src={randomRecipe.strMealThumb} alt={randomRecipe.strMeal} className="recipe-image" />
-          <div className="recipe-details">
-            <p><strong>Kategorie:</strong> {randomRecipe.strCategory}</p>
-            <p><strong>Region:</strong> {randomRecipe.strArea}</p>
-            <p><strong>Anleitung:</strong> {randomRecipe.strInstructions}</p>
-            <a href={randomRecipe.strYoutube} target="_blank">Video ansehen</a>
-            <h3>Zutaten:</h3>
-            <ul>
-              {Array.from({ length: 20 }, (_, i) => i + 1).map((i) => {
-                const ingredient = randomRecipe[`strIngredient${i}`];
-                const measure = randomRecipe[`strMeasure${i}`];
-                return ingredient ? (
-                  <li key={i}>{measure} {ingredient}</li>
-                ) : null;
-              })}
-            </ul>
-          </div>
+    <div className="recipe-search page-section">
+      <section className="search-hero" aria-labelledby="search-title">
+        <div className="hero-copy">
+          <p className="eyebrow"><span aria-hidden="true">✳</span> {t.appName}</p>
+          <h1 id="search-title">{t.searchTitle}</h1>
+          <p className="hero-intro">{t.searchIntro}</p>
+          <form onSubmit={fetchRecipes} className="search-form" role="search">
+            <label htmlFor="recipe-query">{t.searchLabel}</label>
+            <div className="search-controls">
+              <input
+                id="recipe-query"
+                type="search"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder={t.searchPlaceholder}
+                className="search-input"
+              />
+              <button type="submit" className="search-button" disabled={loading}>
+                {t.search}<span aria-hidden="true"> ↗</span>
+              </button>
+            </div>
+            <button type="button" onClick={fetchRandomRecipe} className="random-button" disabled={loading}>
+              <span aria-hidden="true">✳</span> {t.random}
+            </button>
+          </form>
         </div>
+        <div className="hero-art" aria-hidden="true">
+          <span className="art-spark spark-one">✳</span>
+          <span className="art-spark spark-two">·</span>
+          <div className="plate"><div className="plate-center"><span>r.</span></div></div>
+          <span className="art-note">{language === 'de' ? <>Gutes Essen<br />gute Laune</> : <>good food<br />good mood</>}</span>
+        </div>
+      </section>
+
+      {(loading || error || (searched && !recipes.length)) && (
+        <p className={error ? 'status-message error-message' : 'status-message'} role={error ? 'alert' : 'status'} aria-live="polite">
+          {error || (loading ? t.loading : t.noResults)}
+        </p>
       )}
-      <div className="recipes-grid">
-        {recipes.length > 0 && recipes.map((recipe) => (
-          <div key={recipe.idMeal} className="recipe-card">
-            <h2>{recipe.strMeal}</h2>
-            <img src={recipe.strMealThumb} alt={recipe.strMeal} className="recipe-image" />
-            <Link to={`/recipe/details/${recipe.idMeal}`} className="view-details">Details ansehen</Link>
-          </div>
-        ))}
-      </div>
+
+      {randomRecipe && (
+        <section className="random-recipe result-panel" aria-labelledby="random-recipe-title">
+          <div className="random-heading"><p className="eyebrow">{t.random}</p><h2 id="random-recipe-title">{randomRecipe.strMeal}</h2></div>
+          <img src={randomRecipe.strMealThumb} alt={randomRecipe.strMeal} className="recipe-image" />
+          <RecipeContent recipe={randomRecipe} />
+        </section>
+      )}
+
+      {recipes.length > 0 && (
+        <section className="results-section" aria-labelledby="results-title" aria-live="polite">
+          <div className="section-heading"><p className="eyebrow">{t.results}</p><h2 id="results-title">{recipes.length} {t.results.toLocaleLowerCase()}</h2></div>
+          <div className="recipes-grid">{recipes.map((recipe) => <RecipeCard key={recipe.idMeal} recipe={recipe} detailLabel={t.details} />)}</div>
+        </section>
+      )}
     </div>
   );
 }

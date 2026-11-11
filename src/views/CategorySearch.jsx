@@ -1,102 +1,73 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-
+import { useEffect, useState } from 'react';
+import { RecipeCard } from '../components/RecipeContent';
+import { useApp } from '../context/useApp';
 
 export default function CategorySearch() {
+  const { t } = useApp();
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(''); 
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [recipes, setRecipes] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
+    const controller = new AbortController();
     setLoading(true);
-    const url = 'https://www.themealdb.com/api/json/v1/1/categories.php';
-
-    fetch(url)
+    setError('');
+    fetch('https://www.themealdb.com/api/json/v1/1/categories.php', { signal: controller.signal })
       .then((response) => {
-        if (!response.ok) {
-          throw new Error('Fehler beim Abrufen der Kategorien');
-        }
+        if (!response.ok) throw new Error('Category request failed');
         return response.json();
       })
-      .then((data) => {
-        setCategories(data.categories);
-        setLoading(false);
+      .then((data) => setCategories(data.categories || []))
+      .catch((requestError) => {
+        if (requestError.name !== 'AbortError') setError('categories');
       })
-      .catch((err) => {
-        console.error('Fehler:', err);
-        setError('Fehler beim Abrufen der Kategorien. Bitte versuche es später erneut.');
-        setLoading(false);
-      });
+      .finally(() => setLoading(false));
+    return () => controller.abort();
   }, []);
 
   useEffect(() => {
-    if (selectedCategory) {
-      setLoading(true);
-      const url = `https://www.themealdb.com/api/json/v1/1/filter.php?c=${selectedCategory}`;
-
-      fetch(url)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Fehler beim Abrufen der Rezepte');
-          }
-          return response.json();
-        })
-        .then((data) => {
-          setRecipes(data.meals);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.error('Fehler:', err);
-          setError('Fehler beim Abrufen der Rezepte. Bitte versuche es später erneut.');
-          setLoading(false);
-        });
-    } else {
-     
+    if (!selectedCategory) {
       setRecipes([]);
+      setError('');
+      return undefined;
     }
-  }, [selectedCategory]);
-
-  const handleCategoryChange = (e) => {
-    setSelectedCategory(e.target.value);
-    setError(null);
-  };
+    const controller = new AbortController();
+    setLoading(true);
+    setError('');
+    fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${encodeURIComponent(selectedCategory)}`, { signal: controller.signal })
+      .then((response) => {
+        if (!response.ok) throw new Error('Recipe category request failed');
+        return response.json();
+      })
+      .then((data) => setRecipes(data.meals || []))
+      .catch((requestError) => {
+        if (requestError.name !== 'AbortError') setError('recipes');
+      })
+      .finally(() => { if (!controller.signal.aborted) setLoading(false); });
+    return () => controller.abort();
+  }, [selectedCategory, t.searchError]);
 
   return (
-    <div className="category-search">
-      <h1>Rezept Suche nach Kategorie</h1>
-      
-      {loading && <p>Laden...</p>}
-      
-      <div className="dropdown">
-        <label htmlFor="category">Kategorie:</label>
-        <select id="category" value={selectedCategory} onChange={handleCategoryChange}>
-          <option value="">Wähle eine Kategorie</option>
-          {categories.map((category) => (
-            <option key={category.idCategory} value={category.strCategory}>
-              {category.strCategory}
-            </option>
-          ))}
+    <div className="category-search page-section">
+      <section className="page-intro" aria-labelledby="category-title">
+        <p className="eyebrow"><span aria-hidden="true">02</span> {t.appName}</p>
+        <h1 id="category-title">{t.categoryTitle}</h1>
+        <p className="hero-intro">{t.categoryIntro}</p>
+      </section>
+      <div className="category-picker">
+        <label htmlFor="category">{t.category}</label>
+        <select id="category" value={selectedCategory} onChange={(event) => setSelectedCategory(event.target.value)} disabled={loading && !categories.length}>
+          <option value="">{t.chooseCategory}</option>
+          {categories.map((category) => <option key={category.idCategory} value={category.strCategory}>{category.strCategory}</option>)}
         </select>
       </div>
-      
-      {error && <p className="error-message">{error}</p>}
-      
-      <div className="recipes-grid">
-        {!loading && recipes.length === 0 && selectedCategory && (
-          <p>Keine Rezepte in dieser Kategorie gefunden.</p>
-        )}
-        {recipes.map((recipe) => (
-          <div key={recipe.idMeal} className="recipe-card">
-            <h2>{recipe.strMeal}</h2>
-            <img src={recipe.strMealThumb} alt={recipe.strMeal} className="recipe-image" />
-            <Link to={`/recipe/details/${recipe.idMeal}`} className="view-details">
-              Details ansehen
-            </Link>
-          </div>
-        ))}
-      </div>
+      {loading && <p className="status-message" role="status" aria-live="polite">{t.loading}</p>}
+      {error && <p className="status-message error-message" role="alert">{error === 'categories' ? t.categoryError : t.searchError}</p>}
+      {!loading && !error && !selectedCategory && <p className="empty-prompt">{t.emptyCategory}</p>}
+      {!loading && !error && selectedCategory && !recipes.length && <p className="empty-prompt">{t.noCategoryResults}</p>}
+      {recipes.length > 0 && <section className="recipes-grid" aria-label={`${selectedCategory} ${t.results}`} aria-live="polite">{recipes.map((recipe) => <RecipeCard key={recipe.idMeal} recipe={recipe} detailLabel={t.details} />)}</section>}
     </div>
   );
 }
